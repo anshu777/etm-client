@@ -3,15 +3,15 @@ import { Observable } from 'rxjs/Observable';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 
 import { Employee } from './employee.model';
-import { EmployeeService } from './employee.service';
+import { DataService } from '../shared/service/data-service';
 
 @Injectable()
 export class EmployeesResolve implements Resolve<Employee[]> {
     constructor(
-        private employeeService: EmployeeService
+        private dataService: DataService
     ) { }
 
     resolve(route: ActivatedRouteSnapshot): Observable<Employee[]> {
-        return this.employeeService.getList();
+        return this.dataService.getList('employees');
     }
 }

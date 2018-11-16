@@ -1,5 +1,6 @@
 import { Component, Input, Output, OnDestroy, OnInit, EventEmitter } from '@angular/core';
 import { Employee } from '../employee.model';
+import { DataService } from '../../shared/service/data-service';
 
 @Component({
     selector: 'et-assign-team',
@@ -23,13 +24,11 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
     @Output() teamIdChange = new EventEmitter();
     @Output() selectedEmpChange = new EventEmitter();
 
-    constructor() {
-        this.teams = [
-            { 'id': 1, 'name': 'Mars' },
-            { 'id': 2, 'name': 'Saturn' },
-            { 'id': 3, 'name': 'Mercury' },
-            { 'id': 4, 'name': 'Venus' }
-        ];
+    constructor(private dataService: DataService) {
+        dataService.getList('teams')
+            .subscribe((data) => {
+                this.teams = data;
+            });
         this.teamId = 0;
     }
 
