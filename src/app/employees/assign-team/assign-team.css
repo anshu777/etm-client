@@ -1,0 +1,20 @@
+.input-container {
+  white-space: nowrap;
+  padding-top: 15px;
+  display: flex
+}
+
+.input-container input,
+.input-container select {
+  width: 225px;
+}
+
+.input-container label {
+  width: 100px;
+  padding: 5px 15px 0 0;
+}
+
+.angular2-multiselect {
+  width: 400px;
+  height: 350px;
+}

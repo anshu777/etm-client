@@ -1,0 +1,104 @@
+<div class="template">
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h2>{{title}} </h2>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active"><i class="fa fa-table"></i> {{title}}</li>
+      </ol>
+      <div>
+        <span class="buttonCss" (click)="assignTeam()">Assign Team</span>
+      </div>
+    </div>
+  </div><!-- /.row -->
+
+  <div class="row" *ngIf="isSelected">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <ul class="list-inline">
+        <!-- <li class="active" (click) = "assignTeam()"><i class="fa fa-dashboard"></i> Assign Team</li> -->
+        <li class="active" *ngIf="isSingleSelected" (click)="editRecrod()"><i class="fa fa-table"></i> Edit</li>
+        <li class="active" *ngIf="isSingleSelected" (click)="deleteRecord()"><i class="fa fa-table"></i> Delete</li>
+      </ul>
+    </div>
+  </div><!-- /.row -->
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+      <mat-table [dataSource]="employees" matSort>
+
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> <input type="checkbox" id="empAllCheck" (click)="selectAllRows()">
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <input type="checkbox" value="{{row.Id}}" [checked]="row.Checked" (change)="row.Checked = !row.Checked" id="{{row.id}}"
+              (click)="selectRecord($event)">
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.firstName}} </mat-cell>
+        </ng-container>
+
+        <!-- Progress Column -->
+        <ng-container matColumnDef="office">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Office </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.office}} </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="position">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Position </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.position}} </mat-cell>
+        </ng-container>
+
+        <!-- Color Column -->
+        <ng-container matColumnDef="sex">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Sex </mat-header-cell>
+          <mat-cell *matCellDef="let row" [style.color]="row.color"> {{row.sex}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+      </mat-table>
+
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+
+    </div>
+  </div>
+</div>
+
+
+<pp-modal-window #employeeComponent [visible]="showEditMode" [hideDismissal]="false" size="large">
+  <pp-modal-window-title>
+    Edit Employee
+  </pp-modal-window-title>
+  <pp-modal-window-content>
+    <et-edit-employee #editEmployee [employee]="employee">
+    </et-edit-employee>
+  </pp-modal-window-content>
+  <pp-modal-window-actions>
+    <button type="button" class="button-position" (click)="saveEmployee()">Save</button>
+    <button type="button" class="button-space" (click)="cancelEmployee()">Cancel</button>
+  </pp-modal-window-actions>
+</pp-modal-window>
+
+<pp-modal-window #assignTeamComponent [visible]="showAssignTeam" [hideDismissal]="false" size="large">
+  <pp-modal-window-title>
+    Assign Team
+  </pp-modal-window-title>
+  <pp-modal-window-content>
+    <et-assign-team [processEmployees]="employees.filteredData" [(teamId)]="teamId" [(selectedEmp)]="selectedEmp">
+    </et-assign-team>
+  </pp-modal-window-content>
+  <pp-modal-window-actions>
+    <button type="button" class="button-position" (click)="saveTeam()">Save</button>
+    <button type="button" class="button-space" (click)="cancelAssign()">Cancel</button>
+  </pp-modal-window-actions>
+</pp-modal-window>
+
+<!-- Close the Splash screen -->
+<script src="content/js/loading-bars.js"></script>

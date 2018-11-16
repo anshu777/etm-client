@@ -1,0 +1,23 @@
+<div class="input-container">
+  <label>Team</label>
+  <select (change)="selectTeam($event.target.value)">
+    <option value="0">--Select Team--</option>
+    <option *ngFor="let team of teams" value={{team.id}}>
+      {{team.name}}
+    </option>
+  </select>
+</div>
+<div class="input-container">
+  <label>Employees</label>
+  <div class="angular2-multiselect">
+    <angular2-multiselect [data]="processEmployees" [(ngModel)]="selectedEmp" [settings]="settings">
+    </angular2-multiselect>
+  </div>
+
+</div>
+<div class="input-container">
+
+</div>
+<div class="input-container">
+
+</div>
