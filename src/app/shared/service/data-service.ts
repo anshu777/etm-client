@@ -27,9 +27,9 @@ export class DataService {
     }
 
     post(postURL: string, postData: any): Observable<any> {
-        const options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) });
-        return this.http.post(postURL, postData, options)
-            .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+        const headers = new Headers().set('content-type', 'application/json');
+        return this.http.post(postURL, postData)
+            .map(this.extractData)
+            .catch(this.handleError);
     }
 }

@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TableComponent } from './table/table.component';
-import { TimesheetService } from './timesheet.service';
+import { DataService } from '../shared/service/data-service';
 import { EmployeeTimesheet, TimesheetRow, TimesheetColumn } from './timesheet.model';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -41,7 +41,7 @@ export class TimesheetComponent implements OnInit {
         { id: 7, name: 'Sat' },
     ];
 
-    constructor(private route: ActivatedRoute, private timesheetService: TimesheetService) {
+    constructor(private dataService: DataService) {
 
 
     }
@@ -50,18 +50,16 @@ export class TimesheetComponent implements OnInit {
         /* Initialize this.* bindable members with data.* members */
         this.employeeId = 1;
 
-        this.etDataSub = this.timesheetService.get('timesheet/getbyuserid/1')
+        this.etDataSub = this.dataService.getList('http://localhost/etmapi/api/timesheet/getbyuserid/1')
             .subscribe(etsheet => this.mapTimesheetData(etsheet));
     }
 
-    saveTimesheet() {
-        console.log(this.tableComponent.rowFields);
-        let employeeTimesheet = new EmployeeTimesheet();
+    private saveTimesheet() {
+        const employeeTimesheet = new EmployeeTimesheet();
         employeeTimesheet.employeeId = 1;
         employeeTimesheet.teamId = 1;
         employeeTimesheet.timesheetRows = this.tableComponent.rowFields;
-
-        this.timesheetService.save('timesheet/AddTimeSheet', employeeTimesheet);
+        this.dataService.post('http://localhost:57023/api/timesheet', employeeTimesheet).subscribe();
     }
 
     mapTimesheetData(etsheet) {
