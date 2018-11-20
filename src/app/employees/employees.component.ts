@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { ModalWindowComponent } from '../shared/modal-window/modal-window.component';
 import { Employee } from './employee.model';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
     styleUrls: ['./employees.css']
 })
 
-export class EmployeesComponent implements OnInit, OnDestroy {
-    displayedColumns = ['id', 'name', 'office', 'position', 'sex'];
+export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
+    displayedColumns = ['id', 'name', 'designation', 'category', 'projectstatus', 'status'];
     employees: any;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -38,20 +38,28 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     @ViewChild('employeeComponent')
     private employeeComponent: ModalWindowComponent;
 
-    constructor(private dataService: DataService, private router: Router) { }
+    constructor(private dataService: DataService, private router: Router) {
+        this.bindData();
+    }
 
     ngOnInit() {
+        this.bindData();
+    }
+    ngOnDestroy() {
+        if (!!this.dataFetchSub) {
+            this.dataFetchSub.unsubscribe();
+        }
+    }
+    ngAfterViewInit() {
+        this.bindData();
+    }
+    bindData() {
         this.dataFetchSub = this.dataService.getList('employee')
             .subscribe(
                 data => {
                     this.mapData(data);
                 }
             );
-    }
-    ngOnDestroy() {
-        if (!!this.dataFetchSub) {
-            this.dataFetchSub.unsubscribe();
-        }
     }
     mapData(data: any) {
         this.employees = new MatTableDataSource(data);
@@ -62,10 +70,10 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     selectRecord(event: any) {
         const checkbox = event.target as HTMLInputElement;
         if (checkbox.checked) {
-            this.selectedRows.push(checkbox.id);
+            this.selectedRows.push(checkbox.value);
             this.isSelected = true;
         } else {
-            this.selectedRows.splice(this.selectedRows.indexOf(Number(checkbox.id)), 1);
+            this.selectedRows.splice(this.selectedRows.indexOf(Number(checkbox.value)), 1);
             if (this.selectedRows.length === 0) {
                 this.isSelected = false;
             }
@@ -74,7 +82,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     }
 
     editRecrod() {
-        this.employee = Object.assign({}, this.employees.find(x => x.id === Number(this.selectedRows)));
+        this.employee = Object.assign({}, this.employees.filteredData.find(x => x.Id === Number(this.selectedRows)));
         this.showEditMode = true;
     }
 
@@ -83,10 +91,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     }
     saveEmployee() {
         const emp = this.employees.filter(x => x.id === Number(this.selectedRows));
-        emp[0].firstName = this.employee.firstName;
-        emp[0].office = this.employee.office;
-        emp[0].position = this.employee.position;
-        emp[0].sex = this.employee.sex;
+        emp[0].name = this.employee.name;
         this.showEditMode = false;
     }
     deleteRecord() {
