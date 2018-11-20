@@ -44,7 +44,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
         }
     }
     addNewEmployee() {
-        this.dataService.post('http://localhost/etm/api/employee', this.employee)
+        this.dataService.post('employee', this.employee)
         .subscribe(() => {
             this.router.navigate(['employees']);
         });
