@@ -1,6 +1,7 @@
 import { Component, Input, Output, OnDestroy, OnInit, EventEmitter } from '@angular/core';
 import { Employee } from '../employee.model';
 import { DataService } from '../../shared/service/data-service';
+import { Subscription } from 'rxjs/Rx';
 
 @Component({
     selector: 'et-assign-team',
@@ -9,8 +10,6 @@ import { DataService } from '../../shared/service/data-service';
 })
 
 export class AssignTeamComponent implements OnInit, OnDestroy {
-    private teams;
-    private employees: Employee[];
     @Input() teamId: number;
     @Input() selectedEmp = [];
     settings = {};
@@ -24,11 +23,17 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
     @Output() teamIdChange = new EventEmitter();
     @Output() selectedEmpChange = new EventEmitter();
 
+    private teams;
+    private employees: Employee[];
+    private dataFetchSub: Subscription;
+
     constructor(private dataService: DataService) {
-        dataService.getList('teams')
-            .subscribe((data) => {
-                this.teams = data;
-            });
+        this.dataFetchSub = this.dataService.getList('team')
+            .subscribe(
+                data => {
+                    this.teams = data;
+                }
+            );
         this.teamId = 0;
     }
 
@@ -40,17 +45,21 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
             classes: 'myclass custom-class'
         };
     }
-
     ngOnDestroy() {
+        if (!!this.dataFetchSub) {
+            this.dataFetchSub.unsubscribe();
+        }
     }
     selectTeam(id: number) {
         this.teamIdChange.emit(id);
     }
     processEmployee(): Employee[] {
         const result: Array<any> = [];
-        this.employees.forEach(item => {
-            result.push({ id: Number(item.id), itemName: item.firstName });
-        });
+        // if (this.employees.length > 0) {
+        //     this.employees.forEach(item => {
+        //         result.push({ id: Number(item.id), itemName: item.firstName });
+        //     });
+        // }
         return result;
     }
     onItemSelect(item: any) {

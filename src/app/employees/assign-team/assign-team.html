@@ -2,8 +2,8 @@
   <label>Team</label>
   <select (change)="selectTeam($event.target.value)">
     <option value="0">--Select Team--</option>
-    <option *ngFor="let team of teams" value={{team.id}}>
-      {{team.name}}
+    <option *ngFor="let team of teams" value={{team.Id}}>
+      {{team.Name}}
     </option>
   </select>
 </div>

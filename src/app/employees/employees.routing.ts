@@ -1,15 +1,15 @@
 import { Routes, RouterModule } from '@angular/router';
-
-import { EmployeesComponent }    from './employees.component';
-
-import { EmployeesResolve }   from './employees-resolve.service';
+import { EmployeesComponent } from './employees.component';
+import { CreateEmployeeComponent } from './employee-create/employee-create.component';
 
 const employeesRoutes: Routes = [
-    {   path: 'employees',  
-        component: EmployeesComponent,
-        resolve: {
-            employees: EmployeesResolve
-        } 
+    {
+        path: 'employees',
+        component: EmployeesComponent
+    },
+    {
+        path: 'employees/employee-create',
+        component: CreateEmployeeComponent
     }
 ];
 

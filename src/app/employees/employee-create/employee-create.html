@@ -1,0 +1,67 @@
+<div class="template">
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h2>Add Employee </h2>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active"><i class="fa fa-table"></i> Add Employee</li>
+      </ol>
+      <div>
+        <span class="buttonCss" (click)="addNewEmployee()">Save</span> |
+        <span class="buttonCss" (click)="cancel()">Cancel</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="input-container">
+        <label>Name</label>
+        <input type="text">
+      </div>
+      <div class="input-container">
+        <label>Designation</label>
+        <select (change)="selectTeam($event.target.value)">
+          <option value="0">--Select Designation--</option>
+          <option *ngFor="let team of teams" value={{team.id}}>
+            {{team.name}}
+          </option>
+        </select>
+      </div>
+      <div class="input-container">
+        <label>Date Of Joining</label>
+        <input type="date">
+      </div>
+      <div class="input-container">
+        <label>Category</label>
+        <select (change)="selectTeam($event.target.value)">
+          <option value="0">--Select Category--</option>
+          <option *ngFor="let team of teams" value={{team.id}}>
+            {{team.name}}
+          </option>
+        </select>
+      </div>
+      <div class="input-container">
+        <label>Client Status</label>
+        <select (change)="selectTeam($event.target.value)">
+          <option value="0">--Select Client Status--</option>
+          <option *ngFor="let team of teams" value={{team.id}}>
+            {{team.name}}
+          </option>
+        </select>
+      </div>
+      <div class="input-container">
+        <label>Jointing CTC</label>
+        <input type="number">
+      </div>
+      <div class="input-container">
+        <label>Status</label>
+        <select (change)="selectTeam($event.target.value)">
+          <option value="0">--Select Status--</option>
+          <option *ngFor="let team of teams" value={{team.id}}>
+            {{team.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

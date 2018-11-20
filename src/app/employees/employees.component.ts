@@ -1,8 +1,10 @@
-import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ModalWindowComponent } from '../shared/modal-window/modal-window.component';
 import { Employee } from './employee.model';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { DataService } from '../shared/service/data-service';
+import { Subscription } from 'rxjs/Rx';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'et-employees',
@@ -10,9 +12,9 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
     styleUrls: ['./employees.css']
 })
 
-export class EmployeesComponent implements OnInit, AfterViewInit {
+export class EmployeesComponent implements OnInit, OnDestroy {
     displayedColumns = ['id', 'name', 'office', 'position', 'sex'];
-    employees: MatTableDataSource<Employee>;
+    employees: any;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
@@ -31,18 +33,28 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     private selectedEmp = [];
     private teamId: number;
 
+    private dataFetchSub: Subscription;
+
     @ViewChild('employeeComponent')
     private employeeComponent: ModalWindowComponent;
 
-    constructor(private route: ActivatedRoute) { }
+    constructor(private dataService: DataService, private router: Router) { }
 
     ngOnInit() {
-        /* Initialize this.* bindable members with data.* members */
-        const eData = this.route.snapshot.data['employees'];
-        this.employees = new MatTableDataSource(eData);
+        this.dataFetchSub = this.dataService.getList('employee')
+            .subscribe(
+                data => {
+                    this.mapData(data);
+                }
+            );
     }
-
-    ngAfterViewInit() {
+    ngOnDestroy() {
+        if (!!this.dataFetchSub) {
+            this.dataFetchSub.unsubscribe();
+        }
+    }
+    mapData(data: any) {
+        this.employees = new MatTableDataSource(data);
         this.employees.paginator = this.paginator;
         this.employees.sort = this.sort;
     }
@@ -62,7 +74,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     }
 
     editRecrod() {
-        this.employee = Object.assign({}, this.employees.filteredData.find(x => x.id === Number(this.selectedRows)));
+        this.employee = Object.assign({}, this.employees.find(x => x.id === Number(this.selectedRows)));
         this.showEditMode = true;
     }
 
@@ -70,7 +82,7 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         this.showEditMode = false;
     }
     saveEmployee() {
-        let emp = this.employees.filteredData.filter(x => x.id === Number(this.selectedRows));
+        const emp = this.employees.filter(x => x.id === Number(this.selectedRows));
         emp[0].firstName = this.employee.firstName;
         emp[0].office = this.employee.office;
         emp[0].position = this.employee.position;
@@ -78,8 +90,8 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
         this.showEditMode = false;
     }
     deleteRecord() {
-        // let removeIndex = this.employees.filteredData.findIndex(x => x.id === Number(this.selectedRows));
-        // this.employees.filteredData = this.employees.filteredData.splice(removeIndex, 1);
+        // let removeIndex = this.employees.findIndex(x => x.id === Number(this.selectedRows));
+        // this.employees = this.employees.splice(removeIndex, 1);
     }
     assignTeam() {
         this.showAssignTeam = true;
@@ -91,5 +103,8 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     }
     cancelAssign() {
         this.showAssignTeam = false;
+    }
+    addNewEmployee() {
+        this.router.navigate(['employees/employee-create']);
     }
 }

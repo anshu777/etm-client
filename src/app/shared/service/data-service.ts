@@ -4,19 +4,18 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class DataService {
-    private url = 'http://localhost:4200/assets/api/';
-    // private url = 'http://localhost/employee-tracker-apis/api/employees';   // URL to web API
+    private url = 'http://localhost/etm/api/';
 
     constructor(private http: Http) { }
 
     getList(objectName: string): Observable<any> {
-        return this.http.get(`${this.url}${objectName}.json`)
+        return this.http.get(`${this.url}${objectName}`)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
     private extractData(res: Response) {
-        return res.json() || {};
+        return res.json().Data || {};
     }
 
     private handleError(error: any) {
@@ -27,9 +26,9 @@ export class DataService {
     }
 
     post(postURL: string, postData: any): Observable<any> {
-        const headers = new Headers().set('content-type', 'application/json');
-        return this.http.post(postURL, postData)
-            .map(this.extractData)
-            .catch(this.handleError);
+        const options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) });
+        return this.http.post(postURL, postData, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     }
 }

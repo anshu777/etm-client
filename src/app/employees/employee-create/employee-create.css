@@ -1,0 +1,21 @@
+.buttonCss {
+  color: #3286DB;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.input-container {
+  white-space: nowrap;
+  padding-top: 15px;
+  display: flex
+}
+
+.input-container input,
+.input-container select {
+  width: 225px;
+}
+
+.input-container label {
+  width: 120px;
+  padding: 5px 15px 0 0;
+}

@@ -7,6 +7,8 @@
         <li class="active"><i class="fa fa-table"></i> {{title}}</li>
       </ol>
       <div>
+        <span class="buttonCss" (click)="addNewEmployee()">Add New Employee</span>
+        |
         <span class="buttonCss" (click)="assignTeam()">Assign Team</span>
       </div>
     </div>
@@ -91,7 +93,7 @@
     Assign Team
   </pp-modal-window-title>
   <pp-modal-window-content>
-    <et-assign-team [processEmployees]="employees.filteredData" [(teamId)]="teamId" [(selectedEmp)]="selectedEmp">
+    <et-assign-team [processEmployees]="employees" [(teamId)]="teamId" [(selectedEmp)]="selectedEmp">
     </et-assign-team>
   </pp-modal-window-content>
   <pp-modal-window-actions>
