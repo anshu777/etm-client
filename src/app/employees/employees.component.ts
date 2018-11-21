@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ModalWindowComponent } from '../shared/modal-window/modal-window.component';
 import { Employee } from './employee.model';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./employees.css']
 })
 
-export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class EmployeesComponent implements OnInit, OnDestroy {
     displayedColumns = ['id', 'name', 'designation', 'category', 'projectstatus', 'status'];
     employees: any;
 
@@ -21,7 +21,7 @@ export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     errorMessage: string;
     title = 'Employees';
-    // employees: Employee[];
+    private employeeArray: Employee[];
     private isSelected: boolean;
     private isSingleSelected: boolean;
     private selectedRows: Array<any> = [];
@@ -39,7 +39,6 @@ export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
     private employeeComponent: ModalWindowComponent;
 
     constructor(private dataService: DataService, private router: Router) {
-        this.bindData();
     }
 
     ngOnInit() {
@@ -49,9 +48,6 @@ export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!!this.dataFetchSub) {
             this.dataFetchSub.unsubscribe();
         }
-    }
-    ngAfterViewInit() {
-        this.bindData();
     }
     bindData() {
         this.dataFetchSub = this.dataService.getList('employee')
@@ -99,6 +95,7 @@ export class EmployeesComponent implements OnInit, OnDestroy, AfterViewInit {
         // this.employees = this.employees.splice(removeIndex, 1);
     }
     assignTeam() {
+        this.employeeArray = this.employees.filteredData;
         this.showAssignTeam = true;
     }
     saveTeam() {

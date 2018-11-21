@@ -24,7 +24,7 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
     @Output() selectedEmpChange = new EventEmitter();
 
     private teams;
-    private employees: Employee[];
+    private employees;
     private dataFetchSub: Subscription;
 
     constructor(private dataService: DataService) {
@@ -55,11 +55,12 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
     }
     processEmployee(): Employee[] {
         const result: Array<any> = [];
-        // if (this.employees.length > 0) {
-        //     this.employees.forEach(item => {
-        //         result.push({ id: Number(item.id), itemName: item.firstName });
-        //     });
-        // }
+        if (this.employees) {
+            this.employees.forEach(item => {
+                result.push({ id: Number(item.Id), itemName: item.Name });
+            });
+        }
+
         return result;
     }
     onItemSelect(item: any) {
