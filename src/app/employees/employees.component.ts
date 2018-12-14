@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ModalWindowComponent } from '../shared/modal-window/modal-window.component';
 import { Employee } from './employee.model';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { DataService } from '../shared/service/data-service';
+import { DataService } from '../shared/services/data.service';
 import { Subscription } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 
 export class EmployeesComponent implements OnInit, OnDestroy {
-    displayedColumns = ['id', 'name', 'designation', 'category', 'projectstatus', 'status'];
+    displayedColumns = ['id', 'name', 'designation', 'category', 'projectstatus', 'status', 'team'];
     employees: any;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -32,7 +32,7 @@ export class EmployeesComponent implements OnInit, OnDestroy {
     private showAssignTeam = false;
     private selectedEmp = [];
     private teamId: number;
-
+    private showSpinner: Boolean = false;
     private dataFetchSub: Subscription;
 
     @ViewChild('employeeComponent')
@@ -50,7 +50,9 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         }
     }
     bindData() {
-        this.dataFetchSub = this.dataService.getList('employee')
+        this.showSpinner = true;
+        this.dataFetchSub = this.dataService.getList('employee/getlist')
+            .finally(() => this.showSpinner = false)
             .subscribe(
                 data => {
                     this.mapData(data);
@@ -79,7 +81,9 @@ export class EmployeesComponent implements OnInit, OnDestroy {
 
     editRecrod() {
         this.employee = Object.assign({}, this.employees.filteredData.find(x => x.Id === Number(this.selectedRows)));
-        this.showEditMode = true;
+        const employeeId = Number(this.selectedRows);
+        //this.showEditMode = true;
+        this.router.navigate([`employees/employee-edit/${employeeId}`]);
     }
 
     cancelEmployee() {
@@ -95,17 +99,10 @@ export class EmployeesComponent implements OnInit, OnDestroy {
         // this.employees = this.employees.splice(removeIndex, 1);
     }
     assignTeam() {
-        this.employeeArray = this.employees.filteredData;
-        this.showAssignTeam = true;
+        //this.employeeArray = this.employees.filteredData;
+        this.router.navigate(['employees/assign-team']);
     }
-    saveTeam() {
-        // Write logic to save.
-        // Both Team and Employee present here.
-        this.showAssignTeam = false;
-    }
-    cancelAssign() {
-        this.showAssignTeam = false;
-    }
+
     addNewEmployee() {
         this.router.navigate(['employees/employee-create']);
     }

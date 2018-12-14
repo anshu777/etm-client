@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
 	selector: 'pp-notification',
 	styles: ['./notification.scss'],
-	template: './notification.html'
+	templateUrl: './notification.html'
 })
 export class NotificationComponent {
 

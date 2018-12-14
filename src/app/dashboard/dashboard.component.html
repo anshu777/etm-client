@@ -3,12 +3,13 @@
         <div class="col-lg-12">
             <h1>{{title}} <small>Statistics Overview</small></h1>
             <ol class="breadcrumb">
-                <li class="active"><i class="fa fa-dashboard"></i> {{title}}</li>
+                <li (click)="gotopage('orgchart')" class="active"><i class="fa fa-sitemap"></i> Org-Chart</li>
+                <li (click)="gotopage('hcreport')" class="active"><i class="fa fa-dashboard"></i> Head-Count</li>
+                <li (click)="gotopage('')" class="active"><i class="fa fa-dashboard"></i> Reporting</li>
+                <li (click)="gotopage('')" class="active"><i class="fa fa-usd"></i> CTC details</li>
+                <li (click)="gotopage('')" class="active"><i class="fa fa-dashboard"></i> Risk Status</li>
             </ol>
-            <div class="alert alert-success alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <i class="fa fa-info-circle"></i><strong> Like Employee Tracker?</strong> Make sure you check out other tutorials in <a class="alert-link" href="http://cc28tech.com" target="_blank">Cathy Wun's Blog</a>!
-            </div>
+            
         </div>
     </div><!-- /.row -->
 
@@ -19,11 +20,11 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-6">
-                            <i class="fa fa-briefcase fa-5x"></i>
+                            <i class="fa fa-briefcase fa-3x"></i>
                         </div>
                         <div class="col-xs-6 text-right">
                             <p class="announcement-heading">{{positions}}</p>
-                            <p class="announcement-text">Total Positions</p>
+                            <p class="announcement-text">Open Positions</p>
                         </div>
                     </div>
                 </div>
@@ -36,11 +37,11 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-6">
-                            <i class="fa fa-university fa-5x"></i>
+                            <i class="fa fa-th-large fa-3x"></i>
                         </div>
                         <div class="col-xs-6 text-right">
                             <p class="announcement-heading">{{offices}}</p>
-                            <p class="announcement-text">Total Offices</p>
+                            <p class="announcement-text">Project Health</p>
                         </div>
                     </div>
                 </div>
@@ -53,7 +54,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-6">
-                            <i class="fa fa-users fa-5x"></i>
+                            <i class="fa fa-users fa-3x"></i>
                         </div>
                         <div class="col-xs-6 text-right">
                             <p class="announcement-heading">{{employees}}</p>

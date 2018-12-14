@@ -1,5 +1,5 @@
 ﻿import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MatButtonModule, MatCardModule, MatInputModule, MatSnackBarModule, MatToolbarModule } from '@angular/material';
@@ -24,18 +24,24 @@ import { EmployeesModule } from './employees/employees.module';
 import { ProjectsModule } from './projects/projects.module';
 import { TeamsModule } from './teams/teams.module';
 import { TasksModule } from './tasks/tasks.module';
+import { ConfigurationModule } from './configuration/configuration.module';
+
+
+//, canActivate: [AuthGuard]
 
 const myRoots: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' , canActivate: [AuthGuard]},
+  { path: '', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegistrationComponent },
-  { path: 'login', component: LoginComponent},
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
-  { path: 'dashboard', redirectTo: '/dashboard', canActivate: [AuthGuard] },
-  { path: 'timesheet',  redirectTo: '/timesheet'  },
-  { path: 'employees',  redirectTo: '/employees'  },
+  { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'dashboard', redirectTo: '/dashboard' },
+  { path: 'timesheet', redirectTo: '/timesheet' },
+  { path: 'employees', redirectTo: '/employees' },
   { path: 'projects', redirectTo: '/projects' },
-  { path: 'teams',  redirectTo: '/teams', canActivate: [AuthGuard]  },
-  { path: 'tasks',  redirectTo: '/tasks', canActivate: [AuthGuard] }
+  { path: 'teams', redirectTo: '/teams' },
+  { path: 'tasks', redirectTo: '/tasks' },
+  { path: 'configuration', redirectTo: '/configuration' },
+  
 ];
 
 @NgModule({
@@ -51,10 +57,17 @@ const myRoots: Routes = [
   imports: [
     BrowserModule, HttpModule, BrowserAnimationsModule, FormsModule, ReactiveFormsModule,
     MatButtonModule, MatCardModule, MatInputModule, MatSnackBarModule, MatToolbarModule,
-    DashboardModule, SharedModule, TimesheetModule, EmployeesModule, ProjectsModule, TeamsModule, TasksModule,
+    DashboardModule,
+    SharedModule,
+    TimesheetModule,
+    EmployeesModule,
+    ProjectsModule,
+    TeamsModule,
+    TasksModule,
+    ConfigurationModule,
     RouterModule.forRoot(myRoots)
   ],
-  providers: [AuthService, AuthGuard],
+  providers: [],//AuthService AuthGuard
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -3,9 +3,9 @@ import { TimesheetRow } from '../timesheet.model';
 
 @Component({
   selector: 'data-table',
-  templateUrl: './table.component.html'
+  templateUrl: './table.component.html',
   //template: require('./table.component.html'),
-  // styleUrls: ['./table-editable.component.css']
+   styleUrls: ['./table.component.css']
 })
 export class TableComponent implements OnInit {
   @Input() header: Array<any>; //weakDates

@@ -6,10 +6,12 @@ import { CommonModule } from '@angular/common';
 
 import { timesheetRouting } from './timesheet.routing';
 import { SharedModule } from '../shared/shared.module';
+import { TimesheetService } from './timesheet.service';
 
 @NgModule({
     imports: [timesheetRouting, CommonModule, SharedModule],
     declarations: [TimesheetComponent, TableComponent],
+    providers: [TimesheetService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

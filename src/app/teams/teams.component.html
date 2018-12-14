@@ -3,8 +3,10 @@
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <h2>{{title}} </h2>
             <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li class="active"><i class="fa fa-table"></i> {{title}}</li>
+                <li (click)="addTeam()"><i class="fa fa-dashboard"></i> Add New</li>
+                <li class="active" (click) = "assignTasks()"><i class="fa fa-dashboard"></i> Assign Tasks</li>
+                <li class="active" *ngIf="isSingleSelected" (click) = "editRecrod()"><i class="fa fa-table"></i> Edit</li>
+                <li class="active" *ngIf="isSingleSelected" (click) = "deleteRecord()"><i class="fa fa-table"></i> Delete</li>
             </ol>
         </div>
     </div><!-- /.row -->
@@ -13,8 +15,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <ul class="list-inline">
                     <li class="active" (click) = "assignTeam()"><i class="fa fa-dashboard"></i> Assign Team</li>
-                    <li class="active" *ngIf="isSingleSelected" (click) = "editRecrod()"><i class="fa fa-table"></i> Edit</li>
-                    <li class="active" *ngIf="isSingleSelected" (click) = "deleteRecord()"><i class="fa fa-table"></i> Delete</li>
+                    
                 </ul>
             </div>
     </div><!-- /.row -->
@@ -59,7 +60,22 @@
     </div>
 </div>
 
+<pp-modal-window #teamCrudComponent [visible]="showEditMode" [hideDismissal]="false" size="medium">
+    <pp-modal-window-title>
+      Add Team
+    </pp-modal-window-title>
+    <pp-modal-window-content>
+      <et-teams-crud #teamCrud 
+        [team]="team"
+        [projects]="projects" 
+        (projItemIdChange)="setProjectId($event)">
+      </et-teams-crud>
+    </pp-modal-window-content>
+    <pp-modal-window-actions>
+      <button type="button" class="button-position" (click)="saveTeam()">Save</button>
+      <button type="button" class="button-space" (click)="cancel()">Cancel</button>
+    </pp-modal-window-actions>
+  </pp-modal-window>
 
 
-<!-- Close the Splash screen -->
-<script src="content/js/loading-bars.js"></script>
+

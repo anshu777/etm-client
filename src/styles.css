@@ -1,5 +1,14 @@
 ﻿/* You can add global styles to this file, and also import other style files */
-/* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
+/*
+muted - gray #868e96
+primary - blue #007bff
+success - green #28a745
+info - purple #17a2b8
+warning - yellow #ffc107
+danger - red #dc3545
+secondary - gray #868e96
+*/
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import "../node_modules/bootstrap/dist/css/bootstrap.css"; 
 
  body {
@@ -328,4 +337,14 @@ textarea {
 
 .edit-field {
     padding: 20px;
+}
+
+/*Page level action menu*/
+.breadcrumb li {
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+h2 {
+    color: #17a2b8;
 }

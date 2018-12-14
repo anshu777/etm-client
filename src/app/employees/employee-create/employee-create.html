@@ -3,62 +3,107 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <h2>Add Employee </h2>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        <li class="active"><i class="fa fa-table"></i> Add Employee</li>
+        <li (click)="addNewEmployee()"><i class="fa fa-floppy-o"></i> Save</li>
+        <li class="active" (click)="cancel()"><i class="fa fa-undo"></i> Cancel</li>
       </ol>
-      <div>
-        <span class="buttonCss" (click)="addNewEmployee()">Save</span> |
-        <span class="buttonCss" (click)="cancel()">Cancel</span>
-      </div>
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-      <div class="input-container">
-        <label>Name</label>
-        <input type="text" [(ngModel)]="employee.name">
+    <div>
+      <div class="column">
+        <div class="input-container">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="employee.Name">
+        </div>
+        <div class="input-container">
+          <label>Designation</label>
+          <select [(ngModel)]="employee.designationId">
+            <option value="0">--Select Designation--</option>
+            <option *ngFor="let designation of designations" value={{designation.Id}}>
+              {{designation.Name}}
+            </option>
+          </select>
+        </div>
+        <div class="input-container">
+          <label>Date Of Joining</label>
+          <input type="date" [(ngModel)]="employee.DateOfJoin">
+        </div>
+        <div class="input-container">
+          <label>Category</label>
+          <select name="category" [(ngModel)]="employee.categoryId" (change)="selectCategory($event.target.value)">
+            <option value="0">--Select Category--</option>
+            <option *ngFor="let category of categorys" value={{category.Id}}>
+              {{category.Name}}
+            </option>
+          </select>
+        </div>
+        <div class="input-container">
+          <label>Client Status</label>
+          <select name="clientStatus" [(ngModel)]="employee.ProjectStatus">
+            <option value="0">--Select Client Status--</option>
+            <option value=1>Approved</option>
+            <option value=2>Shadow</option>
+          </select>
+        </div>
+        <div class="input-container">
+          <label>Jointing CTC</label>
+          <input type="number" [(ngModel)]="employee.JoiningCtc">
+        </div>
+        <div class="input-container">
+          <label>Status</label>
+          <!-- [ngModel]="employee.status" -->
+          <select name="empStatus" (change)="selectStatus($event.target.value)">
+            <option value="0">--Select Status--</option>
+            <option value="1">Confirmed</option>
+            <option value="2">Probation</option>
+            <option value="3">Resigned</option>
+            <option value="4">Absconding</option>
+            <!-- <option *ngFor="let team of employeeStatus" value={{team.id}}>
+              {{team.name}}
+            </option> -->
+          </select>
+        </div>
+        <div class="input-container" *ngIf="takeAction">
+          <label>Take Action</label>
+          <!-- [(ngModel)]="resignAction"  -->
+          <select name="actions" (change)="selectAction($event.target.value)">
+            <option value="0">--Select Action--</option>
+            <option value="1">New Resorce Hiring</option>
+            <option value="2">Resource Shuffling</option>
+            <option value="3">No Action</option>
+          </select>
+        </div>
+        <div class="input-container" *ngIf="actionHire">
+          <input id="0" type="radio" value="Yes" name="regAction" /> Yes
+          <input id="1" type="radio" value="No" name="regAction" /> No
+          <input id="2" type="radio" value="On Hold" name="regAction" /> On Hold
+        </div>
+
       </div>
-      <div class="input-container">
-        <label>Designation</label>
-        <select [(ngModel)]="employee.designationId">
-          <option value="0">--Select Designation--</option>
-          <option *ngFor="let designation of designations" value={{designation.Id}}>
-            {{designation.Name}}
-          </option>
-        </select>
-      </div>
-      <div class="input-container">
-        <label>Date Of Joining</label>
-        <input type="date" [(ngModel)]="employee.dateOfJoin">
-      </div>
-      <div class="input-container">
-        <label>Category</label>
-        <select [(ngModel)]="employee.categoryId">
-          <option value="0">--Select Category--</option>
-          <option *ngFor="let category of categorys" value={{category.Id}}>
-            {{category.Name}}
-          </option>
-        </select>
-      </div>
-      <div class="input-container">
-        <label>Client Status</label>
-        <select [(ngModel)]="employee.projectStatus">
-          <option value="0">--Select Client Status--</option>
-          <option value=1>Approved</option>
-          <option value=2>Shadow</option>
-        </select>
-      </div>
-      <div class="input-container">
-        <label>Jointing CTC</label>
-        <input type="number" [(ngModel)]="employee.joiningCtc">
-      </div>
-      <div class="input-container">
-        <label>Status</label>
-        <select [(ngModel)]="employee.status">
-          <option value="0">--Select Status--</option>
-          <option value=1>Confirmed</option>
-          <option value=2>Probation</option>
-        </select>
+      <div class="column">
+        <div class="input-container">
+          <label>Previous Experience</label>
+          <input type="number" id="experience" [(ngModel)]="employee.ExperienceBeforeJoining">
+        </div>
+
+        <div class="input-container">
+          <label>Primary Skills</label>
+          <div class="angular2-multiselect">
+            <angular2-multiselect [data]="primarySkillsArray" [(ngModel)]="selectedPrimarySkills" [settings]="settings">
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Secondary Skills</label>
+          <div class="angular2-multiselect">
+            <angular2-multiselect [data]="secondarySkillsArray" [(ngModel)]="selectedSecondarySkills" [settings]="settings">
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Remarks</label>
+          <textarea [(ngModel)]="employee.Remarks"></textarea>
+        </div>
       </div>
     </div>
   </div>

@@ -68,8 +68,8 @@
 .sidebar ul li {
     border-bottom: 1px solid #e7e7e7;
     line-height: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .sidebar ul li a.active {
@@ -106,7 +106,7 @@
         z-index: 1;
         position: absolute;
         width: 230px;
-        margin-top: 150px;
+        margin-top: 180px;
     }
 
     .navbar-top-links .dropdown-messages,

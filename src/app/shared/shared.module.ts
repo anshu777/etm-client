@@ -14,7 +14,9 @@ import { PopupComponent } from './popup/popup.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { MatSortModule, MatPaginatorModule } from '@angular/material';
-import { DataService } from './service/data-service';
+import { DataService } from './services/data.service';
+import { SpinnerComponent } from './spinner/spinner.component';
+
 import { NvD3Module } from 'ng2-nvd3';
 // d3 and nvd3 should be included somewhere
 import 'd3';
@@ -41,7 +43,8 @@ import 'nvd3';
     ModalWindowTitleDirective,
     ModalWindowContentDirective,
     ModalWindowActionsDirective,
-    DropdownComponent
+    DropdownComponent,
+    SpinnerComponent
   ],
   exports: [
     FormsModule,
@@ -55,12 +58,13 @@ import 'nvd3';
 
     AngularMultiSelectModule,
     DropdownComponent,
+    SpinnerComponent,
+
     MatToolbarModule, MatInputModule, MatTableModule, MatButtonModule,
     MatIconModule, MatCardModule, MatSortModule, MatPaginatorModule
+
   ],
-  providers: [
-    DataService
-  ],
+  providers: [DataService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
