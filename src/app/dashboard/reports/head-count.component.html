@@ -12,7 +12,9 @@
     </select>
 </div>
 
-<div id="report" *ngIf="showProjectReport">
+<etm-spinner [showSpinner]="showSpinner"></etm-spinner>
+
+<div id="report" *ngIf="showProjectReport && !showSpinner">
     <table>
         <tr>
             <th>Project</th>
@@ -41,7 +43,7 @@
     </table>
 </div>
 
-<div id="report" *ngIf="showTechSummaryReport">
+<div id="report" *ngIf="showTechSummaryReport && !showSpinner">
     <table>
         <tr>
             <th>Technology</th>
@@ -89,7 +91,7 @@
     </table>
 </div>
 
-<div id="report" *ngIf="showDesignationReport">
+<div id="report" *ngIf="showDesignationReport && !showSpinner">
     <table style="padding-top:30px;">
         <thead>
             <th>Category</th>

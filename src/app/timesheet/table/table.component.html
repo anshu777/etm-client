@@ -25,7 +25,7 @@
                   type="text" (keyup)="changeValue(h.id, h.date, h.taskId, $event)" 
                   [(ngModel)]="h.hours">
               </div>
-              <label *ngIf="h.taskId === rowFields.length">{{h.hours}}</label>
+              <label  *ngIf="h.taskId === rowFields.length">{{h.hours}}</label>
             </td>
 
             <td class="text-center greyBox">{{r.totalHours}}</td>

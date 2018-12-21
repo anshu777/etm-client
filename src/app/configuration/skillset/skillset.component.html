@@ -1,10 +1,14 @@
-<div class="template">
+<etm-spinner [showSpinner]="showSpinner"></etm-spinner>
+<div class="template" *ngIf="!showSpinner">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <h2>Add SkillSet </h2>
       <ol class="breadcrumb">
         <li (click)="addNewStatus()"><i class="fa fa-floppy-o"></i> Save</li>
         <li class="active" (click)="cancel()"><i class="fa fa-undo"></i> Cancel</li>
+        <li class="active" *ngIf="isSelected && isSingleSelected" (click)="editRecrod()"><i class="fa fa-pencil-square"></i> Edit</li>
+        <li class="active" *ngIf="isSelected && isSingleSelected" (click)="deleteRecord()"><i class="fa fa-trash"></i> Delete</li>
+
       </ol>
     </div>
   </div>
@@ -14,6 +18,10 @@
         <label>Skill Name</label>
         <input type="text" name="status" />
       </div>
+      <div class="input-container">
+          <input id="1" type="radio" value="Primary" name="skillType" /> Primary
+          <input id="2" type="radio" value="Secondary" name="skillType" /> Secondary
+        </div>
     </div>
     <div class="column">
       <mat-table [dataSource]="skillSet" matSort>

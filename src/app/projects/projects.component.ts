@@ -34,6 +34,7 @@ export class ProjectsComponent implements OnInit {
     private isSingleSelected: boolean;
     private clients: Array<any> = [];
     private employees: Array<any> = [];
+    private showSpinner: Boolean = false;
     @ViewChild('projectComponent')
     private projectComponent: ModalWindowComponent;
 
@@ -58,7 +59,9 @@ export class ProjectsComponent implements OnInit {
 
     bindList() {
         /* Initialize this.* bindable members with data.* members */
+        this.showSpinner = true;
         this.getDataSub = this.projectService.getList()
+            .finally(() => this.showSpinner = false)
             .subscribe(pData => this.mapData(pData));
 
     }
@@ -91,8 +94,9 @@ export class ProjectsComponent implements OnInit {
     }
 
     saveProject() {
-
+        this.showSpinner = true;
         this.saveDataSub = this.dataService.save('project/post', this.project)
+            .finally(() => this.showSpinner = false)
             .subscribe(
                 (success) => {
                     // this.onSuccess(success);

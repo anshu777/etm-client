@@ -30,7 +30,7 @@ export class TeamsComponent implements OnInit {
     private team: Team = new Team();
     private projects: Array<any> = [];
     private tasks: Array<any> = [];
-
+    private showSpinner: Boolean = false;
     constructor(private router: Router, private dataService: DataService) { }
 
     ngOnInit() {
@@ -65,7 +65,9 @@ export class TeamsComponent implements OnInit {
     }
 
     bindList() {
+        this.showSpinner = true;
         this.getTeamsSub = this.dataService.getList('team/getlist')
+            .finally(() => this.showSpinner = false)
             .subscribe(pData => this.mapData(pData));
     }
 

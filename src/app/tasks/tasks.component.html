@@ -1,11 +1,13 @@
-<div class="template">
+<etm-spinner [showSpinner]="showSpinner"></etm-spinner>
+<div class="template" *ngIf="!showSpinner">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <h2>{{title}} </h2>
             <ol class="breadcrumb">
                 <li (click)="addTask()"><i class="fa fa-dashboard"></i> Add New</li>
-                <li class="active"><i class="fa fa-table"></i> Edit</li>
-                <li class="active"><i class="fa fa-table"></i> Delete</li>
+                <li class="active" *ngIf="isSelected && isSingleSelected" (click)="editRecrod()"><i class="fa fa-pencil-square"></i> Edit</li>
+                <li class="active" *ngIf="isSelected && isSingleSelected" (click)="deleteRecord()"><i class="fa fa-trash"></i> Delete</li>
+        
             </ol>
         </div>
     </div><!-- /.row -->
@@ -19,7 +21,7 @@
                   <mat-header-cell *matHeaderCellDef mat-sort-header> <input type="checkbox" id="empAllCheck" (click)="selectAllRows()">
                   </mat-header-cell>
                   <mat-cell *matCellDef="let row">
-                    <input type="checkbox" value="{{row.Id}}" [checked]="row.Checked" (change)="row.Checked = !row.Checked" id="{{row.id}}"
+                    <input type="checkbox" value="{{row.id}}" [checked]="row.Checked" (change)="row.Checked = !row.Checked" id="{{row.id}}"
                       (click)="selectRecord($event)">
                   </mat-cell>
                 </ng-container>

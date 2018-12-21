@@ -1,18 +1,19 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, OnChanges, OnInit } from '@angular/core';
 import { TimesheetRow } from '../timesheet.model';
 
 @Component({
   selector: 'data-table',
   templateUrl: './table.component.html',
   //template: require('./table.component.html'),
-   styleUrls: ['./table.component.css']
+  styleUrls: ['./table.component.css']
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnChanges {
   @Input() header: Array<any>; //weakDates
   @Input() leftColumns: Array<any>; //tasks
   @Input() employeeId: number;
-  rowFields: Array<TimesheetRow> = []; //has one task and rest weakDates
+  rowFields: Array<TimesheetRow> = []; //has one task and rest weakDates ...used internal
   private timeSheetRow: TimesheetRow = new TimesheetRow();
+  @Input() inputTimesheetRows: Array<TimesheetRow> = []; //set from timesheet
 
   ngOnInit() {
     let ctr = 1;
@@ -23,11 +24,32 @@ export class TableComponent implements OnInit {
       this.timeSheetRow.taskName = x.name;
       //add dynamic dates
       this.timeSheetRow.timesheetColumns = [];
-      this.header.forEach((y) =>
-        this.timeSheetRow.timesheetColumns.push({ id: y.id, date: y.name, empId: this.employeeId, taskId: ctr, hours: 0 }));
+      this.header.forEach((y) => {
+        this.timeSheetRow.timesheetColumns
+          .push({ id: y.id, dayName: y.name, date: y.dDate, empId: this.employeeId, taskId: ctr, hours: 0 });
+      });
 
-      this.timeSheetRow.totalHours = 0;
+      // set totalHours if rowFields is having some values
+      let totalHours = 0;
+      if (!!this.inputTimesheetRows.find(z => z.taskId === ctr)) {
+        totalHours = this.inputTimesheetRows.find(z => z.taskId === ctr).totalHours;
+      }
+
+      this.timeSheetRow.totalHours = totalHours;
       this.rowFields.push(this.timeSheetRow);
+      ctr++;
+    });
+  }
+
+  ngOnChanges() {
+    let ctr = 1;
+    this.rowFields.forEach((x) => {
+      if (!!this.inputTimesheetRows.find(z => z.taskId === ctr)) {
+        const tdate = x.timesheetColumns.find(t => t.taskId === ctr).date;
+        x.timesheetColumns.find(t => t.taskId === ctr).hours =
+          this.inputTimesheetRows.find(z => z.taskId === ctr).timesheetColumns.find(t => t.date === tdate).hours;
+
+      }
       ctr++;
     });
   }

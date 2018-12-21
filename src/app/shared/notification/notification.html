@@ -1,22 +1,7 @@
-<div class="wrapper">
-	<div class="icon-panel {{type}}">
-		<pp-icon *ngIf="type === 'success'" svgIcon="26/check-circle" color="white"></pp-icon>
-		<pp-icon *ngIf="type === 'error' || type === 'warning'" svgIcon="26/exclaim-circle" color="white"></pp-icon>
-		<pp-icon *ngIf="type === 'info' || type === 'information'" svgIcon="26/info-circle" color="white"></pp-icon>
-	</div>
-	<div class="content-panel">
-		<div class="text-container">
-			<span class="title">
-				{{title}}
-			</span>
-			<span class="message">
-				{{message}}
-				<ng-content select="custom-message"></ng-content>
-			</span>
-		
-		</div>
-		<div class="close-icon">
-			<pp-icon svgIcon="12/x" color="darkgrey" (click)="dismiss.emit($event)"></pp-icon>
-		</div>
+<div *ngFor="let alert of alerts" class="notification">
+	<div class="{{ cssClass(alert) }} alert-dismissable" *ngIf="!staticAlertClosed" (close)="staticAlertClosed = true">
+		{{alert.message}}
+		<a class="close" (click)="removeAlert(alert)">&times;</a>
+		<!-- (click)="dismiss.emit($event) -->
 	</div>
 </div>

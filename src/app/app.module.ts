@@ -25,7 +25,8 @@ import { ProjectsModule } from './projects/projects.module';
 import { TeamsModule } from './teams/teams.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ConfigurationModule } from './configuration/configuration.module';
-
+import { ETNotificationService } from './shared/services/notification.service';
+import { ETNotificationComponent } from './shared/notification/notification.component';
 
 //, canActivate: [AuthGuard]
 
@@ -41,7 +42,7 @@ const myRoots: Routes = [
   { path: 'teams', redirectTo: '/teams' },
   { path: 'tasks', redirectTo: '/tasks' },
   { path: 'configuration', redirectTo: '/configuration' },
-  
+
 ];
 
 @NgModule({
@@ -52,7 +53,8 @@ const myRoots: Routes = [
     RegistrationComponent,
     LoginComponent,
     SidebarComponent,
-    EqualValidatorDirective
+    EqualValidatorDirective,
+    ETNotificationComponent
   ],
   imports: [
     BrowserModule, HttpModule, BrowserAnimationsModule, FormsModule, ReactiveFormsModule,
@@ -67,7 +69,7 @@ const myRoots: Routes = [
     ConfigurationModule,
     RouterModule.forRoot(myRoots)
   ],
-  providers: [],//AuthService AuthGuard
+  providers: [ETNotificationService],//AuthService AuthGuard
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

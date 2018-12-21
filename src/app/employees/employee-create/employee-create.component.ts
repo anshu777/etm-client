@@ -13,13 +13,15 @@ import { SkillSet } from '../../models/skill-set.model';
 
 export class CreateEmployeeComponent implements OnInit, OnDestroy {
     private designations;
-    private categorys;
+    private categories;
+    private teams;
     private employee: Employee = new Employee();
     private employeeId: number;
     private designationFetchSub: Subscription;
     private emplooyeeFetchSub: Subscription;
     private categoryFetchSub: Subscription;
     private skillFetchSub: Subscription;
+    private teamFetchSub: Subscription;
     private primarySkillsArray: Array<any> = [];
     private secondarySkillsArray: Array<any> = [];
     selectedPrimarySkills: SkillSet[] = [];
@@ -27,6 +29,8 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
     settings = {};
     private takeAction: boolean;
     private actionHire: boolean;
+    private showSpinner: Boolean = false;
+    
     constructor(private router: Router, private activatedRoute: ActivatedRoute, private dataService: DataService) {
 
     }
@@ -60,7 +64,13 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
         this.categoryFetchSub = this.dataService.getList('category')
             .subscribe(
                 data => {
-                    this.categorys = data;
+                    this.categories = data;
+                }
+            );
+        this.teamFetchSub = this.dataService.getList('team')
+            .subscribe(
+                data => {
+                    this.categories = data;
                 }
             );
         this.skillFetchSub = this.dataService.getList('skillset/getlist')
@@ -91,6 +101,7 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
 
     addNewEmployee() {
         this.dataService.save('employee/post', this.employee)
+        .finally(() => this.showSpinner = false)
             .subscribe(() => {
                 this.router.navigate(['employees']);
             });
@@ -103,18 +114,6 @@ export class CreateEmployeeComponent implements OnInit, OnDestroy {
 
     /* skill set */
 
-    onItemSelect(item: any) {
-        this.selectedPrimarySkills.push(item);
-    }
-    OnItemDeSelect(item: any) {
-        this.selectedPrimarySkills.reduce(item);
-    }
-    onSelectAll(items: any) {
-        this.selectedPrimarySkills.push(items);
-    }
-    onDeSelectAll(items: any) {
-        this.selectedPrimarySkills.reduce(items);
-    }
 
     selectStatus(id: string) {
         this.takeAction = id === '3';

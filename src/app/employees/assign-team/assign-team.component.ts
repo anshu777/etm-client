@@ -21,7 +21,7 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
     private teams;
     private employees: Array<any> = [];
     private dataFetchSub: Subscription;
-
+    private showSpinner: Boolean = false;
     constructor(private router: Router, private dataService: DataService) {
 
     }
@@ -42,6 +42,7 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
         this.teamId = 0;
 
         this.dataFetchSub = this.dataService.getList('employee/getoptionlist')
+        .finally(() => this.showSpinner = false)
             .subscribe(
                 data => {
                     this.employees = [];
@@ -62,23 +63,12 @@ export class AssignTeamComponent implements OnInit, OnDestroy {
         this.teamIdChange.emit(id);
     }
 
-    onItemSelect(item: any) {
-        this.selectedEmpChange.emit(this.selectedEmp);
-    }
-    OnItemDeSelect(item: any) {
-        this.selectedEmpChange.emit(this.selectedEmp);
-    }
-    onSelectAll(items: any) {
-        this.selectedEmpChange.emit(this.selectedEmp);
-    }
-    onDeSelectAll(items: any) {
-        this.selectedEmpChange.emit(this.selectedEmp);
-    }
-
     assignTeam() {
         // Write logic to save.
         // Both Team and Employee present here.
         // this.showAssignTeam = false;
+
+        //this.selectedEmp
     }
     cancel() {
         this.router.navigate(['employees']);

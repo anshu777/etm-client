@@ -2,7 +2,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TableComponent } from './table/table.component';
 import { TimesheetService } from './timesheet.service';
-import { EmployeeTimesheet, TimesheetRow, TimesheetColumn } from './timesheet.model';
+import { DataService } from '../shared/services/data.service';
+import { EmployeeTimesheet, TimesheetRow, TimesheetColumn, UserDateDto } from './timesheet.model';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -20,17 +21,18 @@ export class TimesheetComponent implements OnInit {
     private employeeId: number;
     private employeeTimesheet: EmployeeTimesheet;
     private etDataSub: Subscription;
+    private taskDataSub: Subscription;
     private saveDataSub: Subscription;
     private weekDate: Date;
-
+    private showSpinner: Boolean = false;
     // Tasks to be fetched based on teamId
-    private leftColumns: Array<any> = [
-        { id: 1, name: 'Adhoc Meeting' },
-        { id: 2, name: 'Coding' },
-        { id: 3, name: 'Bug Fixing' },
-        { id: 4, name: 'Daily Standup' },
-        { id: 5, name: 'Code Review' },
-        { id: 6, name: 'Total' }
+    private taskColumns: Array<any> = [
+        // { id: 1, name: 'Adhoc Meeting' },
+        // { id: 2, name: 'Coding' },
+        // { id: 3, name: 'Bug Fixing' },
+        // { id: 4, name: 'Daily Standup' },
+        // { id: 5, name: 'Code Review' },
+        // { id: 6, name: 'Total' }
     ];
 
     //WeakDates
@@ -54,18 +56,46 @@ export class TimesheetComponent implements OnInit {
         { id: 7, name: 'Sat' },
     ];
 
-    constructor(private route: ActivatedRoute, private timesheetService: TimesheetService) {
+    constructor(private route: ActivatedRoute,
+        private timesheetService: TimesheetService
+        , private dataService: DataService) {
 
 
     }
 
     ngOnInit() {
         /* Initialize this.* bindable members with data.* members */
+        this.route.params.forEach(params => {
+            this.employeeId = params['employeeId'];
+            this.teamId = params['teamId'];
+        });
+
+        this.employeeTimesheet = new EmployeeTimesheet();
+        this.employeeTimesheet.employeeId = this.employeeId;
+        this.employeeTimesheet.teamId = this.teamId;
+        this.employeeTimesheet.timesheetRows = [];
 
         this.weekDate = this.getLastSunday(new Date());
         this.resetHeaders();
-        this.employeeId = 1;
-        this.etDataSub = this.timesheetService.get('getbyuserid/2')
+        this.showSpinner = true;
+
+        this.taskDataSub = this.dataService.get('task/getbyteamid/' + this.teamId)
+            .finally(() => {
+                this.showSpinner = false;
+                this.taskColumns.push({ id: this.taskColumns.length + 1, name: 'Total' });
+            })
+            .subscribe(data =>
+                data.forEach(x => {
+                    this.taskColumns.push({ id: Number(x.id), name: x.name });
+                })
+            );
+
+        const userDate = new UserDateDto();
+        userDate.userId = this.employeeId;
+        userDate.date = this.weekDate;
+        this.showSpinner = true;
+        this.etDataSub = this.dataService.save('timesheet/getbyuserid/', userDate)
+            .finally(() => this.showSpinner = false)
             .subscribe(etsheet => this.mapTimesheetData(etsheet));
     }
 
@@ -101,8 +131,8 @@ export class TimesheetComponent implements OnInit {
     saveTimesheet() {
 
         const employeeTimesheet = new EmployeeTimesheet();
-        employeeTimesheet.employeeId = 1;
-        employeeTimesheet.teamId = 1;
+        employeeTimesheet.employeeId = this.employeeId;
+        employeeTimesheet.teamId = this.teamId;
         employeeTimesheet.timesheetRows = this.tableComponent.rowFields;
 
         this.saveDataSub = this.timesheetService.save('post', employeeTimesheet)
@@ -118,10 +148,10 @@ export class TimesheetComponent implements OnInit {
     }
 
     mapTimesheetData(etsheet) {
-        this.employeeTimesheet = new EmployeeTimesheet();
-        this.employeeTimesheet.employeeId = 1;
-        this.employeeTimesheet.teamId = 1;
-        this.employeeTimesheet.timesheetRows = etsheet.timesheetRows;
+        // this.employeeTimesheet = new EmployeeTimesheet();
+        // this.employeeTimesheet.employeeId = this.employeeId;
+        // this.employeeTimesheet.teamId = this.teamId;
+        this.employeeTimesheet.timesheetRows = etsheet.TimesheetRows;
 
         // Fill out leftColumns
 

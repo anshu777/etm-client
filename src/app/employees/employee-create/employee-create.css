@@ -4,21 +4,19 @@
   cursor: pointer;
 }
 
+.template {
+  padding-bottom: 50px;
+}
+
 .input-container {
   white-space: nowrap;
   padding-top: 15px;
   display: flex
 }
 
-.input-container input,
-.input-container select {
-  width: 225px;
-}
 
-.input-container input[type=radio] {
-  width: 25px;
-  margin: 5px 0px 0 20px;
-}
+
+
 
 .input-container label {
   width: 150px;

@@ -23,10 +23,15 @@ export class TasksComponent implements OnInit {
     private getTeamsSub: Subscription;
     private getTaskSub: Subscription;
     private saveDataSub: Subscription;
+    private deleteDataSub: Subscription;
     private showEditMode = false;
     private task: Task = new Task();
     private teams: Array<any> = [];
     private taskTypes: Array<any> = [];
+    private isSelected: boolean;
+    private isSingleSelected: boolean;
+    private selectedRows: Array<any> = [];
+    private showSpinner: Boolean = false;
     @ViewChild('taskCrudComponent')
     private taskCrudComponent: ModalWindowComponent;
     constructor(private dataService: DataService) { }
@@ -40,7 +45,9 @@ export class TasksComponent implements OnInit {
 
     bindList() {
         /* Initialize this.* bindable members with data.* members */
+        this.showSpinner = true;
         this.getTaskSub = this.dataService.getList('task/getlist')
+        .finally(() => this.showSpinner = false)
             .subscribe(pData => this.mapData(pData));
     }
 
@@ -67,6 +74,7 @@ export class TasksComponent implements OnInit {
     saveTask() {
 
         this.saveDataSub = this.dataService.save('task/post', this.task)
+        .finally(() => this.showSpinner = false)
             .subscribe(
                 (success) => {
                     // this.onSuccess(success);
@@ -77,5 +85,38 @@ export class TasksComponent implements OnInit {
                     // this.handleError(err);
                     console.log(err);
                 });
+    }
+
+    selectRecord(event: any) {
+        const checkbox = event.target as HTMLInputElement;
+        if (checkbox.checked) {
+            this.selectedRows.push(checkbox.value);
+            this.isSelected = true;
+        } else {
+            this.selectedRows.splice(this.selectedRows.indexOf(Number(checkbox.value)), 1);
+            if (this.selectedRows.length === 0) {
+                this.isSelected = false;
+            }
+        }
+        this.isSingleSelected = this.selectedRows.length === 1;
+    }
+
+    deleteRecord() {
+        // let removeIndex = this.employees.findIndex(x => x.id === Number(this.selectedRows));
+        // this.employees = this.employees.splice(removeIndex, 1);
+        this.showSpinner = true;
+        this.deleteDataSub = this.dataService.delete('task/delete/', this.selectedRows[0])
+        .finally(() => this.showSpinner = false)
+        .subscribe(
+            (success) => {
+                // this.onSuccess(success);
+                this.showEditMode = false;
+                this.bindList();
+                this.isSingleSelected  = this.isSingleSelected = false;
+            },
+            err => {
+                // this.handleError(err);
+                console.log(err);
+            });
     }
 }

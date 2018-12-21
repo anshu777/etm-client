@@ -1,4 +1,5 @@
-<div class="template">
+<etm-spinner [showSpinner]="showSpinner"></etm-spinner>
+<div class="template" *ngIf="!showSpinner">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <h2>{{title}} </h2>
@@ -18,7 +19,7 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <data-table #tableComponent [leftColumns]="leftColumns" [header]="header" [employeeId]="employeeId">
+            <data-table #tableComponent [leftColumns]="taskColumns" [header]="header" [employeeId]="employeeId" [(inputTimesheetRows)]="employeeTimesheet.timesheetRows">
             </data-table>
         </div>
     </div>

@@ -22,6 +22,7 @@ export class SkillsetComponent implements OnInit {
   private showEditMode = false;
   private showSpinner: Boolean = false;
   private dataFetchSub: Subscription;
+  
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 

@@ -1,41 +1,50 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-// import { Feature, NotificationPayload, NotificationStatus } from '../../services/signalr';
-// import { NotificationType } from '../../store/notifications';
+import { Component, OnInit } from '@angular/core';
+import { ETNotification, ETNotificationType } from './notification.model';
+import { ETNotificationService } from '../services/notification.service';
 
 @Component({
-	selector: 'pp-notification',
-	styles: ['./notification.scss'],
+	selector: 'et-notification',
 	templateUrl: './notification.html'
 })
-export class NotificationComponent {
 
-	@Input() title: string;
-	//@Input() type: NotificationType;
-	@Input() message: string;
+export class ETNotificationComponent implements OnInit {
+	alerts: ETNotification[] = [];
+	staticAlertClosed = false;
+	constructor(private alertService: ETNotificationService) { }
 
-	// @Input() set payload(payload: NotificationPayload) {
-	// 	if (!!payload) {
-	// 		this.setupMessagePayload(payload);
-	// 	}
-	// }
+	ngOnInit() {
+		this.alertService.getETNotification().subscribe((alert: ETNotification) => {
+			if (!alert) {
+				// clear alerts when an empty alert is received
+				this.alerts = [];
+				return;
+			}
 
-	@Output() dismiss: EventEmitter<any> = new EventEmitter();
-
-	private messagePayload: any;
-	//private messageType: NotificationStatus;
-	//private featureName: Feature;
-
-	private linkClicked($event) {
-		if (!!this.messagePayload.callbackEvent) {
-			this.messagePayload.callbackEvent.emit();
-		}
-		$event.preventDefault();
+			// add alert to array
+			this.alerts.push(alert);
+			setTimeout(() => this.staticAlertClosed = true, 5000);
+		});
 	}
 
-	// private setupMessagePayload(payload: NotificationPayload): void {
-	// 	this.messagePayload = payload.content;
-	// 	this.messageType = <NotificationStatus>payload.messageType;
-	// 	this.featureName = payload.featureName;
-	// }
+	removeAlert(alert: ETNotification) {
+		this.alerts = this.alerts.filter(x => x !== alert);
+	}
+
+	cssClass(alert: ETNotification) {
+		if (!alert) {
+			return;
+		}
+
+		// return css class based on alert type
+		switch (alert.type) {
+			case ETNotificationType.Success:
+				return 'alert alert-success';
+			case ETNotificationType.Error:
+				return 'alert alert-danger';
+			case ETNotificationType.Info:
+				return 'alert alert-info';
+			case ETNotificationType.Warning:
+				return 'alert alert-warning';
+		}
+	}
 }

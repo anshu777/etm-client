@@ -3,6 +3,8 @@ import { Task } from '../../tasks/task.model';
 import { DataService } from '../../shared/services/data.service';
 import { Subscription } from 'rxjs/Rx';
 import { Router } from '@angular/router';
+import { TeamTasksDto } from '../team.model';
+import { ETNotificationService } from '../../shared/services/notification.service';
 
 @Component({
     selector: 'et-assign-task',
@@ -21,8 +23,13 @@ export class AssignTaskComponent implements OnInit, OnDestroy {
     private taskArray: Array<any> = [];
     private dataFetchSub: Subscription;
     private taskFetchSub: Subscription;
-
-    constructor(private router: Router, private dataService: DataService) {
+    private assignTaskSub: Subscription;
+    private teamTasksDto: TeamTasksDto = new TeamTasksDto();
+    private selectedTeamId: number;
+    private showSpinner: Boolean = false;
+    constructor(private router: Router,
+        private dataService: DataService,
+        private notificationService: ETNotificationService) {
 
     }
 
@@ -34,6 +41,7 @@ export class AssignTaskComponent implements OnInit, OnDestroy {
             classes: 'myclass custom-class'
         };
         this.dataFetchSub = this.dataService.getList('team/getlist')
+        .finally(() => this.showSpinner = false)
             .subscribe(
                 data => {
                     this.teams = data;
@@ -41,6 +49,7 @@ export class AssignTaskComponent implements OnInit, OnDestroy {
             );
 
         this.taskFetchSub = this.dataService.getList('task/getlist')
+        .finally(() => this.showSpinner = false)
             .subscribe(
                 data => {
                     this.taskArray = [];
@@ -55,25 +64,27 @@ export class AssignTaskComponent implements OnInit, OnDestroy {
             this.dataFetchSub.unsubscribe();
         }
     }
+
     selectTeam(id: number) {
-        this.teamIdChange.emit(id);
-    }
-
-
-    onItemSelect(item: any) {
-        this.selectedEmpChange.emit(this.selectedTask);
-    }
-    OnItemDeSelect(item: any) {
-        this.selectedEmpChange.emit(this.selectedTask);
-    }
-    onSelectAll(items: any) {
-        this.selectedEmpChange.emit(this.selectedTask);
-    }
-    onDeSelectAll(items: any) {
-        this.selectedEmpChange.emit(this.selectedTask);
+        this.selectedTeamId = id;
     }
 
     cancel() {
         this.router.navigate(['teams']);
+    }
+
+    assignTeam() {
+        this.teamTasksDto.teamId = this.selectedTeamId;
+        this.teamTasksDto.taskIds = this.selectedTask.map(x => x.id);
+        this.assignTaskSub = this.dataService.save('team/assigntasks', this.teamTasksDto)
+        .finally(() => this.showSpinner = false)   
+        .subscribe(
+                data => {
+                    this.selectedTask = [];
+                    this.teamTasksDto = null;
+                    this.notificationService.success('Saved successfully!');
+                }
+            );
+        console.log(this.selectedTask);
     }
 }

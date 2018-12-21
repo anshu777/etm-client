@@ -1,4 +1,5 @@
-<div class="template">
+<etm-spinner [showSpinner]="showSpinner"></etm-spinner>
+<div class="template" *ngIf="!showSpinner">
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <h2>Add Employee </h2>
@@ -11,6 +12,10 @@
   <div class="row">
     <div>
       <div class="column">
+        <div class="input-container">
+          <label>CompanyID</label>
+          <input type="text" [(ngModel)]="employee.Id">
+        </div>
         <div class="input-container">
           <label>Name</label>
           <input type="text" [(ngModel)]="employee.Name">
@@ -25,6 +30,15 @@
           </select>
         </div>
         <div class="input-container">
+            <label>Team</label>
+            <select [(ngModel)]="employee.designationId">
+              <option value="0">--Select Team--</option>
+              <option *ngFor="let team of teams" value={{team.Id}}>
+                {{team.Name}}
+              </option>
+            </select>
+          </div>
+        <div class="input-container">
           <label>Date Of Joining</label>
           <input type="date" [(ngModel)]="employee.DateOfJoin">
         </div>
@@ -32,7 +46,7 @@
           <label>Category</label>
           <select name="category" [(ngModel)]="employee.categoryId" (change)="selectCategory($event.target.value)">
             <option value="0">--Select Category--</option>
-            <option *ngFor="let category of categorys" value={{category.Id}}>
+            <option *ngFor="let category of categories" value={{category.Id}}>
               {{category.Name}}
             </option>
           </select>

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { Employee } from '../../employees/employee.model';
 import { DataService } from '../../shared/services/data.service';
 import { Subscription } from 'rxjs/Rx';
-import { DesignationHeadCountReportDto, DesignationStatusDto} from './report.models';
+import { DesignationHeadCountReportDto, DesignationStatusDto } from './report.models';
 declare let d3: any;
 
 @Component({
@@ -30,6 +30,7 @@ export class HeadCountReportComponent implements OnInit, OnDestroy {
     private showProjectReport: boolean;
     private showTechSummaryReport: boolean;
     private showDesignationReport: boolean;
+    private showSpinner: boolean;
 
     constructor(private dataService: DataService) { }
 
@@ -50,23 +51,26 @@ export class HeadCountReportComponent implements OnInit, OnDestroy {
     }
 
     getProjectReport() {
+        this.showSpinner = true;
         this.dataFetchSub = this.dataService.getList('employee/getallbyclients')
             .subscribe(
                 data => {
                     this.employees = data;
                     this.showProjectReport = true;
+                    this.showSpinner = false;
                 }
             );
     }
 
     getTechnologyReport() {
+
         this.dataFetchSub = this.dataService.getList('employee/getsummarybytechnology')
             .subscribe(
                 data => {
                     this.techSummaryArray = data;
                 }
             );
-
+        this.showSpinner = true;
         this.dataTechnologySub = this.dataService.getList('employee/getdetailbytechnology')
             .finally(() =>
                 this.prepareTechnologyReport()
@@ -88,9 +92,11 @@ export class HeadCountReportComponent implements OnInit, OnDestroy {
         });
 
         this.showTechSummaryReport = true;
+        this.showSpinner = false;
     }
 
     getDesignationReport() {
+        this.showSpinner = true;
         this.dataFetchSub = this.dataService.getList('designation/getsummarybydesignation')
             .finally(() =>
                 this.prepareDesignationReport()
@@ -103,7 +109,7 @@ export class HeadCountReportComponent implements OnInit, OnDestroy {
     }
 
     prepareDesignationReport() {
-       // this.designationDetailArray = [];
+        // this.designationDetailArray = [];
         // this.techSummaryArray.forEach(x => {
         //     this.techDetailsArray.push({
         //         name: x.Technology,
@@ -112,6 +118,7 @@ export class HeadCountReportComponent implements OnInit, OnDestroy {
         // });
 
         this.showDesignationReport = true;
+        this.showSpinner = false;
     }
 
 

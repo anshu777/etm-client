@@ -42,4 +42,10 @@ export class DataService {
             .map(this.extractData)
             .catch(this.handleError);
     }
+
+    delete(url: any, id: number): Observable<any> {
+        return this.http.delete(this.apiUrl + url + id)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
 }

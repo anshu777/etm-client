@@ -348,3 +348,32 @@ textarea {
 h2 {
     color: #17a2b8;
 }
+
+.input-container input,
+.input-container select {
+  width: 225px;
+  border: 0;
+  outline: 0;
+  background: #fff;
+  padding: 3px;
+  border-bottom: 1px solid #ccc;
+}
+
+.angular2-multiselect { 
+    border: 0;
+    outline: 0;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .input-container input[type=radio] {
+    width: 25px!important;
+    margin: 5px 0px 0 20px;
+  }
+
+.notification {
+    z-index: 1000;
+    margin-top: 10px;
+    box-shadow: 4px 4px #ccc;
+}
+

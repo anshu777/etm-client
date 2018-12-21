@@ -45,6 +45,7 @@ import 'nvd3';
     ModalWindowActionsDirective,
     DropdownComponent,
     SpinnerComponent
+    
   ],
   exports: [
     FormsModule,
@@ -64,7 +65,7 @@ import 'nvd3';
     MatIconModule, MatCardModule, MatSortModule, MatPaginatorModule
 
   ],
-  providers: [DataService],
+  providers: [DataService ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
