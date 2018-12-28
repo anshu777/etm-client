@@ -6,6 +6,7 @@ import { DataService } from '../shared/services/data.service';
 import { EmployeeTimesheet, TimesheetRow, TimesheetColumn, UserDateDto } from './timesheet.model';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { ETNotificationService } from '../shared/services/notification.service';
 
 @Component({
     selector: 'et-timesheet',
@@ -57,8 +58,9 @@ export class TimesheetComponent implements OnInit {
     ];
 
     constructor(private route: ActivatedRoute,
-        private timesheetService: TimesheetService
-        , private dataService: DataService) {
+        private timesheetService: TimesheetService,
+        private notificationService: ETNotificationService,
+        private dataService: DataService) {
 
 
     }
@@ -77,8 +79,42 @@ export class TimesheetComponent implements OnInit {
 
         this.weekDate = this.getLastSunday(new Date());
         this.resetHeaders();
-        this.showSpinner = true;
+        this.getTimesheetData();
+    }
 
+    getLastSunday(date: Date) {
+        const saturday = this.getLastWeekday(date, 6);
+        return this.getLastWeekday(saturday, 0);
+    }
+
+    getLastWeekday(date, weekday) { // 0 = sunday, 1 = monday, ... , 6 = saturday
+        const d = new Date(date);
+        d.setDate(d.getDate() + weekday - d.getDay()); // move to last of given weekday
+        return d;
+    }
+
+    resetWeekDate(event: any) {
+        this.weekDate = new Date(this.getLastSunday(new Date(event.target.value)));
+        this.resetHeaders();
+        this.getTimesheetData();
+    }
+
+    resetHeaders() {
+        this.header = [];
+        const wDate: Date = new Date();
+        wDate.setDate(this.weekDate.getDate() - 1);
+        for (let ctr = 1; ctr <= 7; ctr++) {
+            this.header.push({
+                id: ctr,
+                name: this.headerDays.find(x => x.id === ctr).name,
+                dDate: new Date(wDate.setDate(wDate.getDate() + 1))
+            });
+        }
+    }
+
+    getTimesheetData() {
+        this.showSpinner = true;
+        this.taskColumns = [];
         this.taskDataSub = this.dataService.get('task/getbyteamid/' + this.teamId)
             .finally(() => {
                 this.showSpinner = false;
@@ -99,62 +135,38 @@ export class TimesheetComponent implements OnInit {
             .subscribe(etsheet => this.mapTimesheetData(etsheet));
     }
 
-    getLastSunday(date: Date) {
-        const saturday = this.getLastWeekday(date, 6);
-        return this.getLastWeekday(saturday, 0);
-    }
-
-    getLastWeekday(date, weekday) { // 0 = sunday, 1 = monday, ... , 6 = saturday
-        const d = new Date(date);
-        d.setDate(d.getDate() + weekday - d.getDay()); // move to last of given weekday
-        return d;
-    }
-
-    resetWeekDate(event: any) {
-        this.weekDate = new Date(this.getLastSunday(new Date(event.target.value)));
-        this.resetHeaders();
-    }
-
-    resetHeaders() {
-        this.header = [];
-        const wDate: Date = new Date();
-        wDate.setDate(this.weekDate.getDate() - 1);
-        for (let ctr = 1; ctr <= 7; ctr++) {
-            this.header.push({
-                id: ctr,
-                name: this.headerDays.find(x => x.id === ctr).name,
-                dDate: new Date(wDate.setDate(wDate.getDate() + 1))
-            });
-        }
-    }
-
     saveTimesheet() {
-
+        this.showSpinner = true;
         const employeeTimesheet = new EmployeeTimesheet();
         employeeTimesheet.employeeId = this.employeeId;
         employeeTimesheet.teamId = this.teamId;
         employeeTimesheet.timesheetRows = this.tableComponent.rowFields;
 
         this.saveDataSub = this.timesheetService.save('post', employeeTimesheet)
+            .finally(() => this.showSpinner = false)
             .subscribe(
                 (success) => {
-                    // this.onSuccess(success);
-                    console.log(this.tableComponent.rowFields);
+                    this.notificationService.success('Saved successfully!');
                 },
                 err => {
-                    // this.handleError(err);
-                    console.log(err);
+                    this.notificationService.success('Error occurred while saving record: ' + err);
                 });
     }
 
     mapTimesheetData(etsheet) {
-        // this.employeeTimesheet = new EmployeeTimesheet();
-        // this.employeeTimesheet.employeeId = this.employeeId;
-        // this.employeeTimesheet.teamId = this.teamId;
-        this.employeeTimesheet.timesheetRows = etsheet.TimesheetRows;
-
-        // Fill out leftColumns
-
-        // Fill out WeakDates
+        this.employeeTimesheet.timesheetRows = [];
+        etsheet.TimesheetRows.forEach(tr => {
+            tr.timesheetColumns.forEach(tcol => {
+                tcol.date = new Date(tcol.date);
+            });
+            this.employeeTimesheet.timesheetRows.push(
+                {
+                    id: tr.id,
+                    taskId: tr.taskId,
+                    taskName: tr.taskName,
+                    timesheetColumns: tr.timesheetColumns,
+                    totalHours: tr.totalHours
+                });
+        });
     }
 }

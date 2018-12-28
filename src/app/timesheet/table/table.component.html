@@ -12,25 +12,24 @@
             <th class="text-center task-name">Tasks</th>
             <th class="text-center" *ngFor="let item of header; let id = index">
               {{item.name}}
-             <span class="wdate"> {{item.dDate | date: 'MM/dd/yyyy' }}</span>
+              <span class="wdate"> {{item.dDate | date: 'MM/dd/yyyy' }}</span>
             </th>
-            <th class="text-center rtotal">Total</th>
+            <th class="text-center rtotal greyBox">Total</th>
           </tr>
           <tr *ngFor="let r of rowFields; let id = index">
-            <td class="text-left task-name">{{r.taskName}}</td>
+            <td class="text-left task-name" [ngClass]="(r.taskName === 'Total')?'greyBox':''">{{r.taskName}}</td>
 
-            <td *ngFor="let h of r.timesheetColumns; let id = index">
+            <td *ngFor="let h of r.timesheetColumns; let id = index" [ngClass]="(h.taskId === rowFields.length)?'greyBox':''">
               <div *ngIf="h.taskId < rowFields.length">
-                <input class="text-center" style="width: 30px; border:none;"
-                  type="text" (keyup)="changeValue(h.id, h.date, h.taskId, $event)" 
+                <input class="text-center" style="width: 30px; border:none;" type="text" (keyup)="changeValue(h.id, h.date, h.taskId, $event)"
                   [(ngModel)]="h.hours">
               </div>
-              <label  *ngIf="h.taskId === rowFields.length">{{h.hours}}</label>
+              <label *ngIf="h.taskId === rowFields.length">{{h.hours}}</label>
             </td>
 
             <td class="text-center greyBox">{{r.totalHours}}</td>
           </tr>
-        
+
         </tbody>
       </table>
     </div>

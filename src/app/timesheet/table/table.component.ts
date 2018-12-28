@@ -26,7 +26,12 @@ export class TableComponent implements OnInit, OnChanges {
       this.timeSheetRow.timesheetColumns = [];
       this.header.forEach((y) => {
         this.timeSheetRow.timesheetColumns
-          .push({ id: y.id, dayName: y.name, date: y.dDate, empId: this.employeeId, taskId: ctr, hours: 0 });
+          .push({
+            id: y.id,
+            dayName: y.name,
+            date: new Date(Date.UTC(y.dDate.getFullYear(), y.dDate.getMonth(), y.dDate.getDate(), 0, 0, 0, 0)),
+            employeeId: this.employeeId, taskId: ctr, hours: 0
+          });
       });
 
       // set totalHours if rowFields is having some values
@@ -41,20 +46,63 @@ export class TableComponent implements OnInit, OnChanges {
     });
   }
 
+  getDate(tdate: Date) {
+    return tdate.getUTCDate();
+  }
+
+  getMonth(tdate: Date) {
+    return tdate.getUTCMonth();
+  }
+
   ngOnChanges() {
     let ctr = 1;
     this.rowFields.forEach((x) => {
       if (!!this.inputTimesheetRows.find(z => z.taskId === ctr)) {
-        const tdate = x.timesheetColumns.find(t => t.taskId === ctr).date;
-        x.timesheetColumns.find(t => t.taskId === ctr).hours =
-          this.inputTimesheetRows.find(z => z.taskId === ctr).timesheetColumns.find(t => t.date === tdate).hours;
+        x.timesheetColumns.forEach((col) => {
+          // taskid 1, having 7 days
+          col.hours = 5;
+          this.inputTimesheetRows.filter(z => z.taskId === ctr).forEach((tsRow) => {
+            if (!!tsRow.timesheetColumns.find(t => t.date.getDate() === col.date.getDate() && t.date.getMonth() === col.date.getMonth())) {
+              col.hours = tsRow.timesheetColumns
+                .find(t => t.date.getDate() === col.date.getDate() && t.date.getMonth() === col.date.getMonth()).hours;
+            }
+
+          });
+
+        });
 
       }
       ctr++;
     });
+
+
+    this.rowFields.forEach(c => {
+      let sum = 0;
+      c.timesheetColumns.forEach(t => { sum += Number(t.hours); });
+      c.totalHours = sum;
+    });
+
+    if (!!this.rowFields.find(r => r.id === this.rowFields.length)) {
+      this.rowFields.find(r => r.id === this.rowFields.length)
+        .timesheetColumns.forEach(y => {
+          let csum = 0;
+          this.rowFields.forEach(x => {
+            if (x.id < this.rowFields.length) {
+              if (!!x.timesheetColumns.find(z => z.id === y.id)) {
+                csum += Number(x.timesheetColumns.find(z => z.id === y.id).hours);
+              }
+            }
+          });
+          y.hours = csum;
+
+        });
+    }
+
   }
 
-  changeValue(id: number, date: string, taskId: number, event: any) {
+
+
+  changeValue(tColId: number, date: string, taskId: number, event: any) {
     const tsrow = this.rowFields.find(x => x.id === taskId);
     if (!!tsrow) {
       let sum = 0;
@@ -62,12 +110,12 @@ export class TableComponent implements OnInit, OnChanges {
       tsrow.totalHours = sum;
 
       //column to set value
-      const tcol = this.rowFields.find(x => x.id === this.rowFields.length).timesheetColumns.find(y => y.id === id);
+      const tcol = this.rowFields.find(x => x.id === this.rowFields.length).timesheetColumns.find(y => y.id === tColId);
       if (!!tcol) {
         let csum = 0;
         this.rowFields.forEach(x => {
           if (x.id < this.rowFields.length) {
-            csum += Number(x.timesheetColumns.find(y => y.id === id).hours);
+            csum += Number(x.timesheetColumns.find(y => y.id === tColId).hours);
           }
         });
         tcol.hours = csum;

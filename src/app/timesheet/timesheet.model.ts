@@ -1,6 +1,6 @@
 export class TimesheetColumn {
   id: number;
-  empId: number;
+  employeeId: number;
   taskId: number;
   dayName: string;
   date: Date;
